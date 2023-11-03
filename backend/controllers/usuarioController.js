@@ -1,6 +1,7 @@
 //? Controlador para el intermediario entre el modelo usuario y la vista 
 import Usuario from "../models/Usuario.js"
 import generarId from "../helpers/generarId.js";
+import generarJWT from "../helpers/generarJWT.js";
 
 const registrar = async ( req, res) => {
 
@@ -46,7 +47,8 @@ const login = async ( req, res) => {
         res.json({ 
             _id: usuario.id,
              nombre: usuario.nombre,
-             email: usuario.email
+             email: usuario.email,
+             token: generarJWT(usuario._id),
         })
     } else {
         const error = new Error('El password es Incorrecto')
@@ -55,8 +57,31 @@ const login = async ( req, res) => {
 
 }
 
+// ? Funcion para confirmar la cuenta de los usuarios
+const confirmar = async ( req, res) => {
+
+    const { token } = req.params
+    const usuarioConfirmar  = await Usuario.findOne({ token })
+
+    if (!usuarioConfirmar) {
+        const error = new Error('El Token no es Valido')
+        return res.status(403).json({ msg: error.message })
+    }
+
+    try {
+        usuarioConfirmar.confirmado = true;
+        usuarioConfirmar.token = ""
+        await usuarioConfirmar.save()
+        res.json({ msg: 'Usuario Confirmado Correctamente'})
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
 
 export {
     registrar,
-    login
+    login,
+    confirmar
 }
