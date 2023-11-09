@@ -49,10 +49,24 @@ const Registrar = () => {
 
     // ? Cuando pase las validacion, creamos el usuario en la API
     try {
-      const respuesta = await axios.post('http://localhost:4000/api/usuarios', {nombre, email, password});
-      console.log(respuesta)
+      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/usuarios`, { nombre, email, password });
+
+      setAlerta({
+        msg: data.msg,
+        error: false
+      })
+
+      // * Seteamos el formulario
+      setNombre('')
+      setEmail('')
+      setPassword('')
+      setRepetirPassword('')
+
     } catch (error) {
-      console.log(error)
+      setAlerta({
+        msg: error.response.data.msg,
+        error: true
+      })
     }
 
 
