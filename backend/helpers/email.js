@@ -8,11 +8,11 @@ export const emailResgitro = async (datos) => {
     const { email, nombre, token } = datos;
 
     let transport = nodemailer.createTransport({
-        host: "sandbox.smtp.mailtrap.io",
-        port: 2525,
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
         auth: {
-            user: "79c705687c5ff6",
-            pass: "eedef36f07c870"
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
         }
     });
 
@@ -41,11 +41,11 @@ export const emailOlvidePassword = async (datos) => {
 
     // TODO: Mover hacia las variables de entorno
     let transport = nodemailer.createTransport({
-        host: "sandbox.smtp.mailtrap.io",
-        port: 2525,
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
         auth: {
-            user: "79c705687c5ff6",
-            pass: "eedef36f07c870"
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
         }
     });
 
