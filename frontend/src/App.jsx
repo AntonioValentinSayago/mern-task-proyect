@@ -10,27 +10,34 @@ import ConfirmarCuneta from './pages/ConfirmarCuneta'
 
 
 import { AuthProvider } from './context/AuthProvider'
+import { ProyectosProvider } from './context/ProyectosContext'
+
 import RutaProtegida from './layouts/RutaProtegida'
 import Proyectos from './pages/Proyectos'
+import { NuevoProyecto } from './pages/NuevoProyecto'
+
 function App() {
 
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path='/' element={<AuthLayout />}>
-            <Route index element={<Login />} />
-            <Route path='registrar' element={<Registrar />} />
-            <Route path='olvide-password' element={<OlvidePassword />} />
-            <Route path='olvide-password/:token' element={<NuevoPassword />} />
-            <Route path='confirmar/:id' element={<ConfirmarCuneta />} />
-          </Route>
+        <ProyectosProvider>
+          <Routes>
+            <Route path='/' element={<AuthLayout />}>
+              <Route index element={<Login />} />
+              <Route path='registrar' element={<Registrar />} />
+              <Route path='olvide-password' element={<OlvidePassword />} />
+              <Route path='olvide-password/:token' element={<NuevoPassword />} />
+              <Route path='confirmar/:id' element={<ConfirmarCuneta />} />
+            </Route>
 
-          <Route path='/proyectos' element={<RutaProtegida />}>
-            <Route index element={<Proyectos />} />
-          </Route>
+            <Route path='/proyectos' element={<RutaProtegida />}>
+              <Route index element={<Proyectos />} />
+              <Route path='crear-proyecto' element={<NuevoProyecto />} />
+            </Route>
 
-        </Routes>
+          </Routes>
+        </ProyectosProvider>
       </AuthProvider>
 
     </BrowserRouter>
