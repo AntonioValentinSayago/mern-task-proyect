@@ -12,6 +12,31 @@ const ProyectosProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
+    // Todo: UseEffect para mostrar los proyectos creados
+
+    useEffect(() => {
+        const obtenerProyectos = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+
+                const { data } = await clienteAxios('http://localhost:4000/api/proyectos', config);
+                setProyectos(data)
+
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        obtenerProyectos()
+    }, [])
+
     // ? Ventana de Alerta desde un conext provider
     const mostrarAlerta = alerta => {
         setAlerta(alerta)
@@ -34,8 +59,10 @@ const ProyectosProvider = ({ children }) => {
                 }
             }
 
-            const { data } = await clienteAxios.post('/proyectos', proyecto, config);
-            
+            const { data } = await clienteAxios.post('http://localhost:4000/api/proyectos', proyecto, config);
+
+            console.log(data)
+
             setAlerta({
                 msg: ' Proyecto Creado correctamente',
                 error: false,
@@ -50,8 +77,6 @@ const ProyectosProvider = ({ children }) => {
             console.log(error)
         }
     }
-
-
 
     return (
         <ProyectosContext.Provider
