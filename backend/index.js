@@ -15,7 +15,7 @@ dotenv.config();
 conectarDB();
 
 // ! Configuracion del CORS
-const whiteList = [process.env.FRONTEND_URL];
+const whiteList = ["http://localhost:5173"];
 
 const corsOptions = {
     origin: function (origin, callback) {
@@ -23,7 +23,7 @@ const corsOptions = {
             // ? Puede consultar la API
             callback(null, true)
         } else {
-            // ? No esta permiito
+            // ? No esta permitido
             callback(new Error("Error de Cors"))
         }
     }
