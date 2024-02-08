@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Alerta from "../components/Alerta"
 
 import useAuth from "../hooks/useAuth"
@@ -13,6 +13,9 @@ const Login = () => {
   const [alerta, setAlerta] = useState({});
 
   const { setAuth } = useAuth();
+
+  //* Direccionar al Cliente cuando inicie sesion
+  const navigate = useNavigate();
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -35,7 +38,7 @@ const Login = () => {
       // ? almacenar el token del usuario autenticado en Local Storage
       localStorage.setItem('token', data.token)
       setAuth(data);
-
+      navigate('/proyectos')
     } catch (error) {
       setAlerta({
         msg: error.response.data.msg,
