@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext } from "react";
 import clienteAxios from "../config/clienteAxios";
 import { useNavigate } from 'react-router-dom'
+import axios from "axios";
 
 const ProyectosContext = createContext()
 
@@ -49,7 +50,47 @@ const ProyectosProvider = ({ children }) => {
     }
 
     // ? Funcion para insertar proyecto en la BD
+    // * Validar que el formulario va editar o crear un proyecto 
     const submitProyecto = async proyecto => {
+
+        //* Se valida si el ID existe o viene null
+        if (proyecto.id) {
+            editarProyecto(proyecto);
+        } else {
+            nuevoProyecto(proyecto);
+        }
+
+        // ! El codigo se mueve a la funcion 'nuevoProyecto()'
+
+    }
+
+    //* Funcion para editar el proyecto
+
+    const editarProyecto = async proyecto => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            const { data } = await axios.put(`http://localhost:4000/api/proyectos/${proyecto.id}`, proyecto, config)
+
+           //* Sincronizar el State para ver los cambios
+
+           //* Mostrar la alerta para ver los cambios
+
+           // * Redireccionar
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const nuevoProyecto = async proyecto => {
         try {
             const token = localStorage.getItem('token');
             if (!token) return;
@@ -94,13 +135,13 @@ const ProyectosProvider = ({ children }) => {
             }
 
             const { data } = await clienteAxios(`http://localhost:4000/api/proyectos/${id}`, config)
-            
+
             const { proyecto } = data
             setProyecto(proyecto);
 
         } catch (error) {
             console.log(error)
-        }finally{
+        } finally {
             setCargando(false)
         }
     }

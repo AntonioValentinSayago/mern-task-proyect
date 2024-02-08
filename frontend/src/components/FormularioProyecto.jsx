@@ -1,15 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import useProyectos from "../hooks/useProyectos";
 import Alerta from "./Alerta";
 
 const FormularioProyecto = () => {
 
+    const [ id, setId ] = useState(null)
     const [ nombre, setNombre ] = useState('')
     const [ descripcion, setDescripcion ] = useState('')
     const [ fechaEntrega, setFechaEntrega ] = useState('')
     const [ cliente, setCliente ] = useState('')
+    
+    // * Context Api
+    const { mostrarAlerta, alerta, submitProyecto, proyecto } = useProyectos();
 
-    const { mostrarAlerta, alerta, submitProyecto } = useProyectos();
+    // * Valida si el ID ->paramas viene vacio para decirle al formulario que va editar
+    const params = useParams();
+
+    useEffect(() => {
+        if ( params.id  ) {
+         setId(proyecto._id)   
+         setNombre(proyecto.nombre)   
+         setDescripcion(proyecto.descripcion)   
+         setFechaEntrega(proyecto.fechaEntrega.split('T')[0])
+         setCliente(proyecto.cliente)   
+        }
+    },[params])
+
 
     // Todo: Validación del Formulario
 
@@ -26,8 +43,9 @@ const FormularioProyecto = () => {
         }
 
         // Todo: Pasar los datos hacie el provider
-
-        await submitProyecto({ nombre, descripcion, fechaEntrega, cliente });
+        //*  Se pasa el ID para indicar que va editar el formulario
+        await submitProyecto({id, nombre, descripcion, fechaEntrega, cliente });
+        setId(null)
         setNombre('')
         setCliente('')
         setFechaEntrega('')
@@ -116,7 +134,7 @@ const FormularioProyecto = () => {
 
             <input 
                 type="submit" 
-                value="Crear Proyecto"
+                value={id ? 'Actualizar Proyecto':'Crear Proyecto'}
                 className="bg-sky-600 w-full p-3 uppercase font-bold text-white rounded cursor-pointer hover:bg-sky-700 transition-colors"
             />
 
