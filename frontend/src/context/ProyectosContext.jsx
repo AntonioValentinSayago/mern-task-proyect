@@ -55,9 +55,9 @@ const ProyectosProvider = ({ children }) => {
 
         //* Se valida si el ID existe o viene null
         if (proyecto.id) {
-            editarProyecto(proyecto);
+            await editarProyecto(proyecto);
         } else {
-            nuevoProyecto(proyecto);
+            await nuevoProyecto(proyecto);
         }
 
         // ! El codigo se mueve a la funcion 'nuevoProyecto()'
@@ -80,11 +80,21 @@ const ProyectosProvider = ({ children }) => {
 
             const { data } = await axios.put(`http://localhost:4000/api/proyectos/${proyecto.id}`, proyecto, config)
 
-           //* Sincronizar el State para ver los cambios
+            //* Sincronizar el State para ver los cambios
+            const proyectosActualizados = proyectos.map(proyectoState => proyectoState._id === data._id ? data : proyectoState);
+            setProyectos(proyectosActualizados)
 
-           //* Mostrar la alerta para ver los cambios
+            //* Mostrar la alerta para ver los cambios
+            setAlerta({
+                msg: ' Proyecto Actualizado correctamente',
+                error: false,
+            })
 
-           // * Redireccionar
+            // * Redireccionar
+            setTimeout(() => {
+                setAlerta({})
+                navigate('/proyectos')
+            }, 3000);
         } catch (error) {
             console.log(error);
         }
