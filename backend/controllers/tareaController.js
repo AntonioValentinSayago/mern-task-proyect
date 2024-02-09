@@ -20,9 +20,12 @@ const agregarTarea = async (req, res) => {
 
     try {
         const tareaAlmacenada = await Tarea.create(req.body);
+        //* Almacenenar el ID en el proyecto de la tarea creada
+        existeProyecto.tareas.push(tareaAlmacenada._id);
+        await existeProyecto.save(); //* Guardar los cambios en MongoDB
         res.json(tareaAlmacenada)
     } catch (error) {
-
+        console.log(error);
     }
 
 }
