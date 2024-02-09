@@ -3,7 +3,10 @@ import Tarea from "../models/Tarea.js";
 
 const obtenerProyectos = async (req, res) => {
 
-    const proyectos = await Proyecto.find().where('creador').equals(req.usuario);
+    const proyectos = await Proyecto.find()
+        .where('creador')
+        .equals(req.usuario)
+        .select("-tareas"); //* Evitamos traer las tareas cuando se muestren en la vista de todos los proyectos
     res.json(proyectos)
 
 }
@@ -27,7 +30,7 @@ const obtenerProyecto = async (req, res) => {
 
     const { id } = req.params;
 
-    const proyecto = await Proyecto.findById(id.trim());
+    const proyecto = await Proyecto.findById(id.trim()).populate("tareas"); //* Traemos las tareas de cada proyecto
 
     // ? En caso de no exista el proyecto se muestra un msg
     if (!proyecto && id.length === 24) {
