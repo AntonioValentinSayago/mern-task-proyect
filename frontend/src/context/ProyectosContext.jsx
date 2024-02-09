@@ -13,6 +13,9 @@ const ProyectosProvider = ({ children }) => {
     const [proyecto, setProyecto] = useState([])
     const [cargando, setCargando] = useState(false)
 
+    //* Provider para manejar las modales
+    const [ modalFormularioTarea, setModalFormularioTarea] = useState(false);
+
     const navigate = useNavigate();
 
     // Todo: UseEffect para mostrar los proyectos creados
@@ -190,6 +193,31 @@ const ProyectosProvider = ({ children }) => {
         }
     }
 
+    //* Funcion para abrir o cerrar modal (nueva tarea)
+    const handleModalTarea = () => {
+        setModalFormularioTarea(!modalFormularioTarea)
+    }
+
+    //* Enviar la Tarea a la base de datos
+    const submitTarea = async tarea => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            const { data } = await axios.post('http://localhost:4000/api/tareas', tarea, config)
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <ProyectosContext.Provider
             value={{
@@ -200,7 +228,10 @@ const ProyectosProvider = ({ children }) => {
                 obtenerProyecto,
                 proyecto,
                 cargando,
-                eliminarProyecto
+                eliminarProyecto,
+                modalFormularioTarea,
+                handleModalTarea,
+                submitTarea
             }}
         >
             {children}
