@@ -212,7 +212,16 @@ const ProyectosProvider = ({ children }) => {
             }
 
             const { data } = await axios.post('http://localhost:4000/api/tareas', tarea, config)
-            
+
+            // * Se agrega la tarea al state -> para que carge cuando se agregue una nueva tarea
+            const proyectoActualizado = { ...proyecto }
+            proyectoActualizado.tareas = [...proyecto.tarea, data]
+            //* Se Agrega al State
+            setProyecto(proyectoActualizado)
+
+            setAlerta({})
+            setModalFormularioTarea(false)
+
         } catch (error) {
             console.log(error);
         }
