@@ -16,6 +16,9 @@ const ProyectosProvider = ({ children }) => {
     //* Provider para manejar las modales
     const [ modalFormularioTarea, setModalFormularioTarea] = useState(false);
 
+    //* SET para editar una tarea
+    const [ tarea, setTarea ] = useState({})
+
     const navigate = useNavigate();
 
     // Todo: UseEffect para mostrar los proyectos creados
@@ -215,7 +218,7 @@ const ProyectosProvider = ({ children }) => {
 
             // * Se agrega la tarea al state -> para que carge cuando se agregue una nueva tarea
             const proyectoActualizado = { ...proyecto }
-            proyectoActualizado.tareas = [...proyecto.tarea, data]
+            proyectoActualizado.tareas = [...proyecto.tareas, data]
             //* Se Agrega al State
             setProyecto(proyectoActualizado)
 
@@ -227,6 +230,11 @@ const ProyectosProvider = ({ children }) => {
         }
     }
 
+    // * Editar una Tarea del proyecto
+    const handleModalEditarTarea = tarea => {
+        setTarea(tarea)
+        setModalFormularioTarea(true)
+    }
     return (
         <ProyectosContext.Provider
             value={{
@@ -240,7 +248,9 @@ const ProyectosProvider = ({ children }) => {
                 eliminarProyecto,
                 modalFormularioTarea,
                 handleModalTarea,
-                submitTarea
+                submitTarea,
+                handleModalEditarTarea,
+                tarea
             }}
         >
             {children}

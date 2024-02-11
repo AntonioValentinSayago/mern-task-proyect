@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Alerta from './Alerta';
 
@@ -16,7 +16,7 @@ const PRIORIDAD = ['Baja', 'Media', 'Alta'];
 const ModalFormularioTarea = () => {
 
     // * Extraemos las funciones del provider
-    const { modalFormularioTarea, handleModalTarea, mostrarAlerta, alerta, submitTarea } = useProyectos();
+    const { modalFormularioTarea, handleModalTarea, mostrarAlerta, alerta, submitTarea, tarea } = useProyectos();
 
     const [ nombre, setNombre ] = useState('')
     const [ descripcion, setDescripcion] = useState('')
@@ -25,6 +25,11 @@ const ModalFormularioTarea = () => {
 
     //* Vamos a extraer el proyecto para crear la tarea desde useParamas
     const params = useParams();
+
+    //* UseEffect para editar tarea 
+    useEffect(() => {
+        console.log(tarea);
+    }, [tarea])
 
     // * Const Vaidar el Formulario (submit)
     const handleSubmit = async e => {
