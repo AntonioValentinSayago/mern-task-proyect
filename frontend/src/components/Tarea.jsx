@@ -3,7 +3,7 @@ import useProyectos from "../hooks/useProyectos";
 // eslint-disable-next-line react/prop-types
 const Tarea = ({ tarea }) => {
 
-  const { handleModalEditarTarea } = useProyectos()
+  const { handleModalEditarTarea, handleModalEliminarTarea } = useProyectos()
 
   // eslint-disable-next-line react/prop-types
   const { descripcion, nombre, prioridad, fechaEntrega, estado, _id } = tarea;
@@ -29,7 +29,12 @@ const Tarea = ({ tarea }) => {
           <button className="bg-gray-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg">Incompleta</button>
         )}
 
-        <button className="bg-red-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg">Eliminar</button>
+        <button 
+          className="bg-red-600 px-4 py-3 text-white uppercase font-bold text-sm rounded-lg"
+          onClick={ () => handleModalEliminarTarea(tarea)}
+        >
+          Eliminar
+        </button>
       </div>
     </div>
   )
