@@ -13,11 +13,14 @@ const ProyectosProvider = ({ children }) => {
     const [proyecto, setProyecto] = useState([])
     const [cargando, setCargando] = useState(false)
 
+    // * state para eliminar la tarea
+    const [ modalEliminarTarea, setModalEliminarTarea ] = useState( false )
+
     //* Provider para manejar las modales
-    const [ modalFormularioTarea, setModalFormularioTarea] = useState(false);
+    const [modalFormularioTarea, setModalFormularioTarea] = useState(false);
 
     //* SET para editar una tarea
-    const [ tarea, setTarea ] = useState({})
+    const [tarea, setTarea] = useState({})
 
     const navigate = useNavigate();
 
@@ -175,7 +178,7 @@ const ProyectosProvider = ({ children }) => {
                 }
             }
 
-            const { data } = await clienteAxios.delete(`http://localhost:4000/api/proyectos/${id}`,config);
+            const { data } = await clienteAxios.delete(`http://localhost:4000/api/proyectos/${id}`, config);
 
             //* Sincronizar los Proyectos en el state
             const proyectosActualizados = proyectos.filter(proyectoState => proyectoState._id !== id)
@@ -205,6 +208,18 @@ const ProyectosProvider = ({ children }) => {
 
     //* Enviar la Tarea a la base de datos
     const submitTarea = async tarea => {
+
+        // * Validando si existe '_id' para saber si es editar o crear tarea
+        if (tarea?.id) {
+            await editarTarea(tarea)
+        } else {
+            await crearTarea(tarea)
+        }
+
+    }
+
+    //* Funcion para crear una tarea
+    const crearTarea = async tarea => {
         try {
             const token = localStorage.getItem('token');
             if (!token) return;
@@ -232,11 +247,89 @@ const ProyectosProvider = ({ children }) => {
         }
     }
 
+    // * Editar Tarea
+    const editarTarea = async tarea => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+
+            const { data } = await axios.put(`http://localhost:4000/api/tareas/${tarea.id}`, tarea, config)
+
+            // Todo: se actualiza el DOM (STATE)
+            const proyectoActualizado = {...proyecto}
+            proyectoActualizado.tareas = proyectoActualizado.tareas.map( tareaState => tareaState._id === data._id? data : tareaState)
+            setProyecto(proyectoActualizado)
+
+            //* Configuracion de mostrar alerta y cerrar el modal
+            setAlerta({})
+            setModalFormularioTarea(false)
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // * Editar una Tarea del proyecto
     const handleModalEditarTarea = tarea => {
         setTarea(tarea)
         setModalFormularioTarea(true)
     }
+
+    // * Funcion para Eliminar una Tarea
+    const handleModalEliminarTarea = tarea => {
+        setTarea(tarea)
+        setModalEliminarTarea(!modalEliminarTarea)
+    }
+
+    // * CONST eliminar tarea
+    const eliminarTarea = async ()=> {
+        try {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+    
+                const config = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+    
+                const { data } = await axios.delete(`http://localhost:4000/api/tareas/${tarea._id}`, config)
+    
+                setAlerta({
+                    msg: data.msg,
+                    error: false
+                })
+                // Todo: se actualiza el DOM (STATE)
+                const proyectoActualizado = {...proyecto}
+                proyectoActualizado.tareas = proyectoActualizado.tareas.filter( tareaState => tareaState._id !== tarea._id)
+                setProyecto(proyectoActualizado)
+    
+                //* Configuracion de mostrar alerta y cerrar el modal
+                
+                setModalEliminarTarea(false)
+                setTarea({})
+
+                setTimeout(() => {
+                    setAlerta({})
+                }, 2000)
+                
+            } catch (error) {
+                console.log(error);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <ProyectosContext.Provider
             value={{
@@ -252,7 +345,10 @@ const ProyectosProvider = ({ children }) => {
                 handleModalTarea,
                 submitTarea,
                 handleModalEditarTarea,
-                tarea
+                tarea,
+                handleModalEliminarTarea,
+                modalEliminarTarea,
+                eliminarTarea
             }}
         >
             {children}
