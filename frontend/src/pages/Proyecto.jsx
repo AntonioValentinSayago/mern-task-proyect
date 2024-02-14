@@ -4,22 +4,25 @@ import { useEffect } from 'react';
 
 //* Importacion del Modal
 import ModalFormularioTarea from '../components/ModalFormularioTarea';
+import ModalEliminarTarea from '../components/ModalEliminarTarea';
 import Tarea from '../components/Tarea';
+import Alerta from '../components/Alerta';
 
 const Proyecto = () => {
 
     const params = useParams();
-    const { obtenerProyecto, proyecto, cargando, handleModalTarea } = useProyectos();
+    const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta } = useProyectos();
 
     //* State para Maneja el modal
     // const [ modal, setModal ] = useState(false);
 
     useEffect(() => {
         obtenerProyecto(params.id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const { nombre } = proyecto;
+    const { msg } = alerta
 
     return (
         cargando ? 'Cargando...' : (
@@ -43,7 +46,7 @@ const Proyecto = () => {
 
                 </div>
                 <button
-                    onClick={ handleModalTarea }
+                    onClick={handleModalTarea}
                     type='button'
                     className='text-sm px-5 py-3 w-full md:w-auto rounded-lg uppercase font-bold bg-sky-400 text-white text-center mt-5 flex gap-2 items-center justify-center'
                 >
@@ -53,28 +56,34 @@ const Proyecto = () => {
 
                     Nueva Tarea
                 </button>
-                
-                <p 
+
+                <p
                     className="font-bold text-xl mt-10"
                 >
                     Tareas del Proyecto
                 </p>
 
+                <div className="flex justify-center">
+                    <div className="w-full md:w-1/3 lg:w-1/4">
+
+                        {msg && <Alerta alerta={alerta} />}
+                    </div>
+                </div>
+
                 <div className="bg-white shadow mt-10 rounded-lg">
-                    { proyecto.tareas?.length ? 
-                        proyecto.tareas?.map( tarea => (
-                            <Tarea 
+                    {proyecto.tareas?.length ?
+                        proyecto.tareas?.map(tarea => (
+                            <Tarea
                                 key={tarea._id}
                                 tarea={tarea}
                             />
-                        )) : 
+                        )) :
                         <p className='text-center my-5 p-10'>No hay Tareas en este Proyecto</p>
                     }
                 </div>
 
-                <ModalFormularioTarea 
-
-                />
+                <ModalFormularioTarea />
+                <ModalEliminarTarea />
             </>
         )
     )
