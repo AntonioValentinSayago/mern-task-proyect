@@ -199,6 +199,8 @@ const ProyectosProvider = ({ children }) => {
     //* Funcion para abrir o cerrar modal (nueva tarea)
     const handleModalTarea = () => {
         setModalFormularioTarea(!modalFormularioTarea)
+        // * Siempre que vayamos crear una tarea nueva reinciamos el objeto
+        setTarea({})
     }
 
     //* Enviar la Tarea a la base de datos
