@@ -330,6 +330,11 @@ const ProyectosProvider = ({ children }) => {
         }
     }
 
+    // * Provider para buscar y agregar colaborador a las tareas
+    const submitColaborador = async email => {
+        console.log(email);
+    }
+
     return (
         <ProyectosContext.Provider
             value={{
@@ -348,7 +353,8 @@ const ProyectosProvider = ({ children }) => {
                 tarea,
                 handleModalEliminarTarea,
                 modalEliminarTarea,
-                eliminarTarea
+                eliminarTarea,
+                submitColaborador
             }}
         >
             {children}
