@@ -115,7 +115,7 @@ const eliminarProyecto = async (req, res) => {
     }
 }
 
-// * Habilitanfo la B´suqueda por Email
+// * Habilitanfo la Búsuqueda por Email
 const buscarColaborador = async (req, res) => {
 
     // * Obtenemos el email que se le pasa desde el endpoint
