@@ -1,5 +1,6 @@
 import Proyecto from "../models/Proyecto.js"
 import Tarea from "../models/Tarea.js";
+import Usuario from "../models/Usuario.js";
 
 const obtenerProyectos = async (req, res) => {
 
@@ -46,7 +47,7 @@ const obtenerProyecto = async (req, res) => {
 
     // ? Obtener Tarea del Proyecto
     //const tareas = await Tarea.find().where('proyecto').equals(proyecto._id)
-    
+
     res.json({
         proyecto
     })
@@ -113,6 +114,25 @@ const eliminarProyecto = async (req, res) => {
         console.log(error)
     }
 }
+
+// * Habilitanfo la B´suqueda por Email
+const buscarColaborador = async (req, res) => {
+
+    // * Obtenemos el email que se le pasa desde el endpoint
+    const { email } = req.body
+
+    const usuario = await Usuario.findOne({ email }).select('-confirmado -createAt -password -token -updateAt -__v')
+
+
+    //* Validar si existe el email
+    if (!usuario) {
+        const error = new Error('Usuario no Encontrado')
+        return res.status(404).json({ msg: error.message })
+    }
+
+    res.json(usuario)
+
+}
 const agregarColaborador = async (req, res) => { }
 const eliminarColaborador = async (req, res) => { }
 
@@ -137,6 +157,7 @@ export {
     obtenerProyecto,
     editarProyecto,
     eliminarProyecto,
+    buscarColaborador,
     agregarColaborador,
     eliminarColaborador
 }
