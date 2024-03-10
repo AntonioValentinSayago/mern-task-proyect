@@ -133,7 +133,54 @@ const buscarColaborador = async (req, res) => {
     res.json(usuario)
 
 }
-const agregarColaborador = async (req, res) => { }
+// * Se trabaja con la funcion 29 de feb del 2024
+const agregarColaborador = async (req, res) => {
+
+    //* recibe el id de la funcion del ProyectContext
+    const proyecto = await Proyecto.findById(req.params.id)
+
+    //* Valida de que el proyecto exista
+    if (!proyecto) {
+        const error = new Error('Proyecto no Encontrado')
+        return res.status(404).json({ msg: error.message })
+    }
+
+    // * Se valida que no se agrege otro usuario al proyecto
+    if (proyecto.creador.toString() !== req.usuario._id.toString()) {
+        const error = new Error('Acción no Valida')
+        return res.status(404).json({ msg: error.message })
+    }
+
+
+    //* // * Obtenemos el email que se le pasa desde el endpoint
+    const { email } = req.body
+
+    const usuario = await Usuario.findOne({ email }).select('-confirmado -createAt -password -token -updateAt -__v')
+
+
+    //* Validar si existe el email
+    if (!usuario) {
+        const error = new Error('Usuario no Encontrado')
+        return res.status(404).json({ msg: error.message })
+    }
+
+    //* El colaborar no es el mismo admin del proyecto
+    if(proyecto.creador.toString() === usuario._id.toString()) {
+        const error = new Error('El creador del proyecto no puede ser el mismo')
+        return res.status(404).json({ msg: error.message })
+    }
+
+    //* Revisar que no este agregado al proyecto el mismo colaborador
+    if (proyecto.colaboradores.includes(usuario._id)) {
+        const error = new Error('El usuario ya pertenece al proyecto')
+        return res.status(404).json({ msg: error.message })
+    }
+
+    //* En caso de que este todo bien, se agrega el usuario
+    proyecto.colaboradores.push(usuario._id)
+    await proyecto.save();
+    res.json({ msg: 'Colaborador Agregado Correctamente'})
+ }
 const eliminarColaborador = async (req, res) => { }
 
 // * Obtenemos las tareas por Proyecto
