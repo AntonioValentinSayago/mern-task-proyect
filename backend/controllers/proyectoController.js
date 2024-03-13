@@ -4,8 +4,15 @@ import Usuario from "../models/Usuario.js";
 
 const obtenerProyectos = async (req, res) => {
 
-    const proyectos = await Proyecto.find()
-        .where('creador')
+    //* 120324 Obtenemos nuevo resultados 'or' condiciones de que tiene que ser iguales
+    const proyectos = await Proyecto.find({
+        '$or' : [
+            {'colaboradores' : {$in: req.usuario}},
+            {'creador' : {$in: req.usuario}},
+        ]
+    })
+        //* se eliminar el 'where' porque se coloco el 'or'
+        // .where('creador')
         .equals(req.usuario)
         .select("-tareas"); //* Evitamos traer las tareas cuando se muestren en la vista de todos los proyectos
     res.json(proyectos)
@@ -42,7 +49,8 @@ const obtenerProyecto = async (req, res) => {
     }
 
     // ? Cuando el usuario no tiene permisos para ver el proyecto
-    if (proyecto.creador.toString() !== req.usuario._id.toString()) {
+    //* 120324 Se cambia la condicion
+    if (proyecto.creador.toString() !== req.usuario._id.toString() && !proyecto.colaboradores.some( colaborador =>  colaborador._id.toString() === req.usuario._id.toString() )) {
         const error = new Error('Acción no Valida')
         return res.status(401).json({ msg: error.message })
     }
