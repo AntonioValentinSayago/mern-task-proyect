@@ -163,6 +163,7 @@ const ProyectosProvider = ({ children }) => {
 
             const { proyecto } = data
             setProyecto(proyecto);
+            setAlerta({})
 
         } catch (error) {
             setAlerta({
@@ -391,7 +392,10 @@ const ProyectosProvider = ({ children }) => {
             })
 
             setColaborador({})
-            setAlerta({})
+            
+            setTarea(() => {                
+                setAlerta({})
+            }, 3000)
 
         } catch (error) {
             setAlerta({
