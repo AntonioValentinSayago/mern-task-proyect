@@ -444,6 +444,32 @@ const ProyectosProvider = ({ children }) => {
         }
     }
 
+    //* Cambiar el estado de una tarea
+    const completarTarea = async id => {
+        try {
+            const token = localStorage.getItem('token')
+            if(!token) return
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            // eslint-disable-next-line no-unused-vars
+            const { data } = await axios.post(`http://localhost:4000/api//tareas/estado/${id}`, {}, config)
+            setTarea({})
+            setAlerta({})
+
+            // socket
+            //socket.emit('cambiar estado', data)
+
+        } catch (error) {
+            console.log(error.response)
+        }
+    }
+
+
     return (
         <ProyectosContext.Provider
             value={{
@@ -468,7 +494,8 @@ const ProyectosProvider = ({ children }) => {
                 agregarColaborador,
                 handleModalEliminarColaborador,
                 modalEliminarColaborador,
-                eliminarColaborador
+                eliminarColaborador,
+                completarTarea
             }}
         >
             {children}
