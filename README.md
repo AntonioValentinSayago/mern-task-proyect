@@ -1,4 +1,4 @@
-# Stack + MERN - Task Proyect
+# Stack + MERN - Task Proyect V 1.0.0
 
 Recuerden que deben de ejecutar ```npm install``` para reconstruir los módulos de Node.
 (Sitio Web en Mantenimiento)
